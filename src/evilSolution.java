@@ -2,43 +2,48 @@ import java.util.ArrayList;
 
 public class evilSolution {
 
-    private static ArrayList<Character> partialSolution;
+    private ArrayList<Character> partialSolution;
     private int missingChars;
 
     public evilSolution(int wordLength) {
-        missingChars = wordLength;
-        partialSolution = new ArrayList<>(missingChars);
+        this.missingChars = wordLength;
+        this.partialSolution = new ArrayList<>();
         for (int i = 0; i < wordLength; i++) {
-            partialSolution.add('_');
+            partialSolution.add('_'); // Initialize the solution with underscores
         }
     }
 
+    // Checks if the word is fully solved
     public boolean isSolved() {
         return missingChars == 0;
     }
 
-    public static void printProgress() {
-        for (char c : partialSolution) {
-            System.out.print(c + " ");
-        }
-        System.out.println();
-    }
-
+    // Updates the partial solution based on the new pattern
     public void updatePattern(String pattern) {
         int newMissingChars = 0;
         for (int i = 0; i < pattern.length(); i++) {
             char newChar = pattern.charAt(i);
             if (partialSolution.get(i) == '_' && newChar != '_') {
-                partialSolution.set(i, newChar);
+                partialSolution.set(i, newChar); // Update revealed characters
             }
             if (partialSolution.get(i) == '_') {
-                newMissingChars++;
+                newMissingChars++; // Count remaining blanks
             }
         }
-        missingChars = newMissingChars;
+        this.missingChars = newMissingChars;
     }
 
+    // Returns the current partial solution as a list of characters
     public ArrayList<Character> getPartialSolution() {
         return partialSolution;
+    }
+
+    // **Added**: Returns the partial solution as a formatted string
+    public String getPartialSolutionAsString() {
+        StringBuilder sb = new StringBuilder();
+        for (char c : partialSolution) {
+            sb.append(c).append(" "); // Add spaces between characters
+        }
+        return sb.toString().trim(); // Remove trailing space
     }
 }
