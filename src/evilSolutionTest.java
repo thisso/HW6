@@ -6,33 +6,69 @@ import static org.junit.Assert.*;
 
 public class evilSolutionTest {
 
+
+
     @Test
     public void testInitializeGame() {
+        // Use a mocked dictionary for testing
         evilHangman game = new evilHangman();
-        List<String> dictionary = Arrays.asList("echo", "heal", "belt", "peel", "hazy");
+        List<String> mockDictionary = Arrays.asList("echo", "heal", "belt", "peel", "hazy");
+        game.currentWordList = new ArrayList<>(mockDictionary); // Override dictionary
 
-        // Mock the word list for testing purposes
+        // Initialize the game with a word length of 4
         game.initializeGame(4);
 
-        // Verify that the game initializes correctly with words of the specified length
-        assertEquals(5, game.getRemainingWords().size());
+        // Validate that the game initialized correctly
+        ArrayList<String> remainingWords = game.getRemainingWords();
+        assertEquals("The number of words with length 4 should match", 5, remainingWords.size());
+        assertTrue("Remaining words should contain expected words",
+                remainingWords.containsAll(Arrays.asList("echo", "heal", "belt", "peel", "hazy")));
     }
 
-    @Test
-    public void testPartitionWordFamilies() {
-        evilHangman game = new evilHangman();
-        List<String> dictionary = Arrays.asList("echo", "heal", "belt", "peel", "hazy");
 
-        // Mock the word list for testing
-        game.initializeGame(4);
+
+    @Test
+    public void testPartitionWordFamiliesIsolated() {
+        evilHangman game = new evilHangman();
+        List<String> dictionary = Arrays.asList("echo", "heal", "belt", "aced", "hazy");
+
+        // Override the current word list
+        game.currentWordList = new ArrayList<>(dictionary);
+
+        // Mock the initial solution pattern as all dashes ("----")
+        ArrayList<Character> mockSolution = new ArrayList<>(Arrays.asList('-', '-', '-', '-'));
+        game.solution = new evilSolution(4) {
+            @Override
+            public ArrayList<Character> getPartialSolution() {
+                return mockSolution; // Return mock pattern
+            }
+        };
 
         // Test partitioning based on the guessed letter 'e'
         Map<String, ArrayList<String>> wordFamilies = game.partitionWordFamilies('e');
 
-        // Verify word families are correctly grouped
-        assertTrue(wordFamilies.get("e---").contains("echo"));
-        assertTrue(wordFamilies.get("-e--").containsAll(Arrays.asList("heal", "belt")));
+        // Expected output patterns
+        assertNotNull("Family for pattern 'e---' should not be null", wordFamilies.get("e---"));
+        assertTrue("Family for pattern 'e---' should contain 'echo'", wordFamilies.get("e---").contains("echo"));
+
+        assertNotNull("Family for pattern '-e--' should not be null", wordFamilies.get("-e--"));
+        assertTrue("Family for pattern '-e--' should contain 'heal' and 'belt'",
+                wordFamilies.get("-e--").containsAll(Arrays.asList("heal", "belt")));
+
+        assertNotNull("Family for pattern '--e-' should not be null", wordFamilies.get("--e-"));
+        assertTrue("Family for pattern '--e-' should contain 'peel'", wordFamilies.get("--e-").contains("aced"));
+
+        assertNotNull("Family for pattern '----' should not be null", wordFamilies.get("----"));
+        assertTrue("Family for pattern '----' should contain 'hazy'", wordFamilies.get("----").contains("hazy"));
+
+        // Debugging: Print the word families for verification
+        System.out.println("Word Families: " + wordFamilies);
     }
+
+
+
+
+
 
     @Test
     public void testChooseLargestFamily() {
