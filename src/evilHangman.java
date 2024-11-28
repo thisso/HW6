@@ -4,18 +4,18 @@ import java.util.*;
 
 public class evilHangman {
 
-    // This list holds all the words that still fit the current game state.
+    // This holds all the words that still fit the current game state.
     ArrayList<String> currentWordList;
-    // Keeps track of every letter the player has guessed so far.
+    // Keeps track of every letter the player has guessed so far
     private HashSet<Character> previousGuesses;
-    // Stores letters that were guessed but turned out to be wrong.
+    // Stores letters that were guessed but turned out to be wrong
     TreeSet<Character> incorrectGuesses;
     // Manages the current word solution, showing progress and updating as needed.
     evilSolution solution;
-    // Used to read input from the player during the game.
+    // Used to read input  during the game
     private Scanner inputScanner;
 
-    // Constructor that uses a default dictionary file to start the game.
+    // Constructor that uses a default dictionary  file to start the game.
     public evilHangman() {
         this("engDictionary.txt");
     }
